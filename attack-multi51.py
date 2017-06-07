@@ -21,16 +21,14 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 02110-1301, USA.
 """
 
-import os
-import sys
 import numpy
 import pylab
-from heapq import *
 
-from btcsim import *
+from heapq import heappop
+from btcsim import Miner, Block
 
 numbads = 3
-badpool = set([i for i in range(numbads)])
+badpool = set(range(numbads))
 class BadMiner(Miner):        
     def add_block(self, t_block):
         self.blocks[hash(t_block)] = t_block
@@ -39,7 +37,7 @@ class BadMiner(Miner):
             self.mine_block()
             return
         # ignore all blocks that are not mined by myself
-        if not t_block.miner_id in badpool:
+        if t_block.miner_id not in badpool:
             return
         if (t_block.height > self.blocks[self.chain_head].height):
             self.chain_head = hash(t_block)
